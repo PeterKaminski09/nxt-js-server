@@ -9,8 +9,15 @@ router.get('/code/:macAddress', function(req, res, next) {
   const macAddress = req.params.macAddress;
   searchCode(macAddress)
   .then((response) => {
-    res.send({ address: macAddress, commands: response.length && response[0].code || []});
 
+    res.send({ address: macAddress, commands: response.length && response[0].code || []});
+    removeCode(macAddress)
+    .then((response) => {
+      console.log('Successfully removed the object');
+    })
+    .catch((err) => {
+      console.log(err, 'In the remove method');
+    })
   })
   .catch((err) => res.send({ commands: [], message: "Error finding commands"}));
 });
@@ -29,6 +36,10 @@ router.post('/upload', (req, res, next) => {
 
 function searchCode(macAddress){
   return NXTCode.find({"address": macAddress}).exec();
+}
+
+function removeCode(macAddress){
+  return NXTCode.remove({"address": macAddress}).exec();
 }
 
 function saveCode(codeSnippet){
