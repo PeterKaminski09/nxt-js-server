@@ -5,10 +5,11 @@ var Q = require('q');
 var mongoose = require('mongoose');
 mongoose.Promise = Q.Promise;
 
-
-/* GET home page. */
-router.get('/code', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+router.get('/code/:macAddress', function(req, res, next) {
+  const macAddress = req.params.macAddress;
+  searchCode(macAddress)
+  .then((response) => res.send({ address: macAddress, commands: response}))
+  .catch((err) => res.send({ commands: [], message: "Error finding commands"}));
 });
 
 router.post('/upload', (req, res, next) => {
@@ -23,6 +24,9 @@ router.post('/upload', (req, res, next) => {
   .catch((err) => res.send({ message: 'Error', code: 401}));
 });
 
+function searchCode(macAddress){
+  return NXTCode.find({"address": macAddress}).exec();
+}
 
 function saveCode(codeSnippet){
   const query = { address: codeSnippet.address };
