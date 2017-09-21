@@ -8,7 +8,10 @@ mongoose.Promise = Q.Promise;
 router.get('/code/:macAddress', function(req, res, next) {
   const macAddress = req.params.macAddress;
   searchCode(macAddress)
-  .then((response) => res.send({ address: macAddress, commands: response}))
+  .then((response) => {
+    res.send({ address: macAddress, commands: response.length && response[0].code || []});
+
+  })
   .catch((err) => res.send({ commands: [], message: "Error finding commands"}));
 });
 
