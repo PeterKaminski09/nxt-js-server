@@ -7,7 +7,7 @@ mongoose.Promise = Q.Promise;
 
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/code', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
@@ -25,16 +25,9 @@ router.post('/upload', (req, res, next) => {
 
 
 function saveCode(codeSnippet){
-  var deferred = Q.defer();
-  let code = new NXTCode(codeSnippet);
-  code.save((err, code) => {
-    if (err){
-      deferred.reject(err);
-    } else {
-      deferred.resolve('Success');
-    }
-  });
-  return deferred.promise;
+  const query = { address: codeSnippet.address };
+  const options = { upsert: true};
+  return NXTCode.update(query, codeSnippet, options).exec();
 }
 
 module.exports = router;
