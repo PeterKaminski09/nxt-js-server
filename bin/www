@@ -20,6 +20,22 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+var io = require('socket.io')(server);
+var sockets = {};
+
+//Add socket io initial connection here
+io.on('connection', (socket) => {
+  console.log(socket.id);
+
+  //When a client connects, be sure to store the mac address with the socket id
+  socket.on('register', (data) => {
+    sockets[data.address] = socket.id;
+  });
+
+});
+
+app.set('sockets', sockets);
+app.set('socketio', io);
 
 /**
  * Listen on provided port, on all network interfaces.

@@ -1,9 +1,15 @@
 var express = require('express');
 var router = express.Router();
+var io = require('socket.io');
 var NXTCode = require('../model/NXTCode');
 var Q = require('q');
 var mongoose = require('mongoose');
 mongoose.Promise = Q.Promise;
+
+router.get('/test', function(req, res, next){
+  let val = req.app.get('socketio') ? true : false;
+  res.send({ socketio: val, message: 'test', basket: req.app.get('sockets')});
+});
 
 router.get('/code/:macAddress', function(req, res, next) {
   const macAddress = req.params.macAddress;
