@@ -32,6 +32,8 @@ io.on('connection', (socket) => {
     sockets[data.address] = socket.id;
   });
 
+  socket.emit('test', 'hello world');
+
 });
 
 app.set('sockets', sockets);
