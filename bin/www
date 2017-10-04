@@ -26,7 +26,7 @@ var sockets = {};
 //Add socket io initial connection here
 io.on('connection', (socket) => {
   console.log(socket.id, 'grabbing a new connection');
-  socket.emit('connect', 'Welcome to the server! ' + socket.id);
+  socket.emit('connect', {message: 'Welcome to the server! ' + socket.id});
   //When a client connects, be sure to store the mac address with the socket id
   socket.on('register', (data) => {
     sockets[data.address] = socket.id;
