@@ -26,13 +26,24 @@ var sockets = {};
 //Add socket io initial connection here
 io.on('connection', (socket) => {
   console.log(socket.id, 'grabbing a new connection');
-
+  socket.emit('connect', 'Welcome to the server! ' + socket.id);
   //When a client connects, be sure to store the mac address with the socket id
   socket.on('register', (data) => {
     sockets[data.address] = socket.id;
   });
 
-  socket.emit('test', 'hello world');
+  socket.on('disconnect', function() {
+    console.log(socket.id + ' has disconnected from the server');
+  });
+
+  socket.on('client_type', function(type) {
+    console.log(socket.id + ' is of type ' + type);
+  });
+
+  socket.on('chat message', function(msg){
+    socket.emit('chat message', 'Received your message!');
+    console.log('client message: ' + msg);
+  });
 
 });
 
