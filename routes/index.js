@@ -4,11 +4,19 @@ var io = require('socket.io');
 var NXTCode = require('../model/NXTCode');
 var Q = require('q');
 var mongoose = require('mongoose');
+var _ = require('lodash');
 mongoose.Promise = Q.Promise;
 
 router.get('/test', function(req, res, next){
   let val = req.app.get('socketio') ? true : false;
-  res.send({ socketio: val, message: 'test', basket: req.app.get('sockets')});
+  let socketBank = req.app.get('sockets');
+
+  let sockets = _.values(socketBank);
+  sockets.forEach((socket) => {
+    socket.emit('play sound', { data: 'hello'}); //Just send a test signal out
+  });
+
+  res.send({ socketio: val, socketBank: socketBank});
 });
 
 router.get('/code/:macAddress', function(req, res, next) {

@@ -29,20 +29,13 @@ io.on('connection', (socket) => {
   socket.emit('connect', {message: 'Welcome to the server! ' + socket.id});
   //When a client connects, be sure to store the mac address with the socket id
   socket.on('register', (data) => {
-    sockets[data.address] = socket.id;
+    //Add the new socket into our bank
+    sockets[data.address] = socket;
   });
 
   socket.on('disconnect', function() {
+    delete sockets[socket.id]; //Remove the socket from our bank
     console.log(socket.id + ' has disconnected from the server');
-  });
-
-  socket.on('client_type', function(type) {
-    console.log(socket.id + ' is of type ' + type);
-  });
-
-  socket.on('chat message', function(msg){
-    socket.emit('chat message', 'Received your message!');
-    console.log('client message: ' + msg);
   });
 
 });
