@@ -16,7 +16,7 @@ router.get('/test', function(req, res, next){
     socket.emit('play sound', { data: 'hello'}); //Just send a test signal out
   });
 
-  res.send({ socketio: val, socketBank: 'success'});
+  res.send({ socketio: val, connections: _.values(socketBank).length});
 });
 
 router.get('/code/:macAddress', function(req, res, next) {
