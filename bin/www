@@ -49,7 +49,7 @@ io.on('connection', (socket) => {
     if (data.address){
       const nxtSocket = sockets[data.address];
       const commands = data.commands || [];
-      nxtSocket.emit('execute code', { commands: commands});
+      nxtSocket.emit('execute code', { address: data.address, commands: commands});
       lockedSockets.push(nxtSocket);
     }
   });
