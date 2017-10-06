@@ -21,20 +21,42 @@ app.set('port', port);
 
 var server = http.createServer(app);
 var io = require('socket.io')(server);
-var sockets = {};
+let sockets = {};
+let ipads = {};
+let lockedSockets = [];
 
 //Add socket io initial connection here
 io.on('connection', (socket) => {
+
   console.log(socket.id, 'grabbing a new connection');
+
   socket.emit('connect', {message: 'Welcome to the server! ' + socket.id});
   //When a client connects, be sure to store the mac address with the socket id
-  socket.on('register', (data) => {
-    //Add the new socket into our bank
-    sockets[data.address] = socket;
+  socket.on('register nxts', (data) => {
+    //Each socket will contain a number of mac addresses. We'll pair each mac address to the given socket
+    if (data.addresses){
+      data.addresses.forEach((address) => {
+        sockets[address] = socket;
+      });
+    }
+  });
+
+  socket.on('register ipad', (data) => {
+    ipads[data.address]
+  });
+
+  socket.on('run code', (data) => {
+    if (data.address){
+      const nxtSocket = sockets[data.address];
+      const commands = data.commands || [];
+      nxtSocket.emit('execute code', { commands: commands});
+      lockedSockets.push(nxtSocket);
+    }
   });
 
   socket.on('disconnect', function() {
     delete sockets[socket.id]; //Remove the socket from our bank
+    delete ipads[socket.id];
     console.log(socket.id + ' has disconnected from the server');
   });
 
