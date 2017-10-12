@@ -48,8 +48,18 @@ io.on('connection', (socket) => {
 
   //Whenever an ipad socket tells us to run some code, we'll find the socket for the python client and emit an execute code statement
   socket.on('run code', (data) => {
-    console.log("TYPE ", typeof data);
-    console.log("GOT THE RUN COMMAND", data);
+    data = data.replace(/\\n/g, "\\n")
+                 .replace(/\\'/g, "\\'")
+                 .replace(/\\"/g, '\\"')
+                 .replace(/\\&/g, "\\&")
+                 .replace(/\\r/g, "\\r")
+                 .replace(/\\t/g, "\\t")
+                 .replace(/\\b/g, "\\b")
+                 .replace(/\\f/g, "\\f");
+    // remove non-printable and other non-valid JSON chars
+    data = data.replace(/[\u0000-\u0019]+/g,"");
+    const jsonData = JSON.parse(jsonData);
+    console.log("GOT THE RUN COMMAND", jsonData);
     if (data.address){
       const nxtSocket = sockets[data.address];
       const commands = data.commands || [];
