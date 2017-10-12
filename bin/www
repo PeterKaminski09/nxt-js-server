@@ -22,7 +22,6 @@ app.set('port', port);
 var server = http.createServer(app);
 var io = require('socket.io')(server);
 let sockets = {};
-let ipads = {};
 let lockedSockets = [];
 
 //Add socket io initial connection here
@@ -41,10 +40,13 @@ io.on('connection', (socket) => {
     }
   });
 
-  socket.on('register ipad', (data) => {
-    ipads[data.address]
+  //When asked for available NXTs, send the list of available mac addresses
+  socket.on('get available nxts', (data) => {
+    socket.emit('available nxts', { addresses: Object.keys(sockets)});
   });
 
+
+  //Whenever an ipad socket tells us to run some code, we'll find the socket for the python client and emit an execute code statement
   socket.on('run code', (data) => {
     if (data.address){
       const nxtSocket = sockets[data.address];
