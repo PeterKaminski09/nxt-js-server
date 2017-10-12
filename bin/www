@@ -49,7 +49,10 @@ io.on('connection', (socket) => {
 
   //Whenever an ipad socket tells us to run some code, we'll find the socket for the python client and emit an execute code statement
   socket.on('run code', (data) => {
-    console.log("GOT THE RUN COMMAND", data.address);
+    console.log("GOT THE RUN COMMAND", data["address"]);
+    let jsonData = JSON.parse()
+    console.log("HELLO", jsonData);
+    console.log("DOES THIS WORK", jsonData["address"]);
     if (data.address){
       const nxtSocket = sockets[data.address];
       const commands = data.commands || [];
