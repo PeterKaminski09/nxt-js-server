@@ -58,7 +58,7 @@ io.on('connection', (socket) => {
                  .replace(/\\f/g, "\\f");
     // remove non-printable and other non-valid JSON chars
     data = data.replace(/[\u0000-\u0019]+/g,"");
-    const jsonData = JSON.parse(jsonData);
+    const jsonData = JSON.parse(data);
     console.log("GOT THE RUN COMMAND", jsonData);
     if (data.address){
       const nxtSocket = sockets[data.address];
