@@ -42,6 +42,7 @@ io.on('connection', (socket) => {
 
   //When asked for available NXTs, send the list of available mac addresses
   socket.on('get available nxts', (data) => {
+    console.log('GOT THE SOCKETS IN THE METHOD', sockets)
     socket.emit('available nxts', { addresses: Object.keys(sockets)});
   });
 
