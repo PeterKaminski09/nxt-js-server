@@ -22,7 +22,7 @@ app.set('port', port);
 var server = http.createServer(app);
 var io = require('socket.io')(server);
 let sockets = {};
-let lockedSockets = [];
+let lockedSockets = {};
 
 //Add socket io initial connection here
 io.on('connection', (socket) => {
@@ -63,12 +63,22 @@ io.on('connection', (socket) => {
     if (jsonData.address){
       const nxtSocket = sockets[jsonData.address];
       const commands = jsonData.commands || [];
+      while(lockedSockets[socket.id]){
+        //Wait for the socket to be released
+      }
+      console.log("Socket is unlocked");
       if (nxtSocket){
+        lockedSockets[socket.id] = true;
         nxtSocket.emit('execute code', { address: jsonData.address, commands: commands});
       } else {
         console.log("SOCKET NOT FOUND " + jsonData.address);
       }
     }
+  });
+
+  socket.on('finished program', function() {
+    delete lockedSockets[socket.id]; //Remove the socket from our bank
+    console.log(socket.id + ' unlocked');
   });
 
   socket.on('disconnect', function() {
