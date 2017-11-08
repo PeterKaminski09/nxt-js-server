@@ -63,13 +63,13 @@ io.on('connection', (socket) => {
     if (jsonData.address){
       const nxtSocket = sockets[jsonData.address];
       const commands = jsonData.commands || [];
-      console.log(socket.id, ' waiting for the lock');
-      while(lockedSockets[socket.id]){
+      console.log(nxtSocket.id, ' waiting for the lock');
+      while(lockedSockets[nxtSocket.id]){
         //Wait for the socket to be released
       }
       console.log("Socket is unlocked");
       if (nxtSocket){
-        lockedSockets[socket.id] = true;
+        lockedSockets[nxtSocket.id] = true;
         nxtSocket.emit('execute code', { address: jsonData.address, commands: commands});
       } else {
         console.log("SOCKET NOT FOUND " + jsonData.address);
