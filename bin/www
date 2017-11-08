@@ -63,6 +63,7 @@ io.on('connection', (socket) => {
     if (jsonData.address){
       const nxtSocket = sockets[jsonData.address];
       const commands = jsonData.commands || [];
+      console.log(socket.id, ' waiting for the lock');
       while(lockedSockets[socket.id]){
         //Wait for the socket to be released
       }
