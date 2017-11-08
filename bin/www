@@ -65,7 +65,7 @@ io.on('connection', (socket) => {
       const commands = jsonData.commands || [];
 
       //If the socket is locked, exit this and tell them to try again in a second.
-      if (lockedSockets[nxtSocket.id]){
+      if (nxtSocket && nxtSocket.id && lockedSockets[nxtSocket.id]){
         socket.emit('busy', {'message': 'This nxt is currently busy. Please try again in a few seconds'});
         return;
       }
