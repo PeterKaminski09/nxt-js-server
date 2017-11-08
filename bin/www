@@ -59,17 +59,18 @@ io.on('connection', (socket) => {
     // remove non-printable and other non-valid JSON chars
     data = data.replace(/[\u0000-\u0019]+/g,"");
     const jsonData = JSON.parse(data);
-    console.log(jsonData, 'DATA DATA');
+
     if (jsonData.address){
       const nxtSocket = sockets[jsonData.address];
       const commands = jsonData.commands || [];
-      console.log(nxtSocket.id, ' waiting for the lock');
-      while(lockedSockets[nxtSocket.id]){
-        //Wait for the socket to be released
+
+      //If the socket is locked, exit this and tell them to try again in a second.
+      if (lockedSockets[nxtSocket.id]){
+        socket.emit('busy', {'message': 'This nxt is currently busy. Please try again in a few seconds'});
+        return;
       }
-      console.log("Socket is unlocked");
       if (nxtSocket){
-        lockedSockets[nxtSocket.id] = true;
+        lockedSockets[nxtSocket.id] = true; //Before running, lock this socket down so we don't lose streams
         nxtSocket.emit('execute code', { address: jsonData.address, commands: commands});
       } else {
         console.log("SOCKET NOT FOUND " + jsonData.address);
