@@ -59,10 +59,15 @@ io.on('connection', (socket) => {
     // remove non-printable and other non-valid JSON chars
     data = data.replace(/[\u0000-\u0019]+/g,"");
     const jsonData = JSON.parse(data);
+    console.log(jsonData, 'DATA DATA');
     if (jsonData.address){
       const nxtSocket = sockets[jsonData.address];
       const commands = jsonData.commands || [];
-      nxtSocket.emit('execute code', { address: jsonData.address, commands: commands});
+      if (nxtSocket){
+        nxtSocket.emit('execute code', { address: jsonData.address, commands: commands});
+      } else {
+        console.log("SOCKET NOT FOUND " + jsonData.address);
+      }
     }
   });
 
