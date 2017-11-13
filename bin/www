@@ -84,6 +84,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', function() {
+    delete lockedSockets[socket.id];
     delete sockets[socket.id]; //Remove the socket from our bank
     console.log(socket.id + ' has disconnected from the server');
   });
