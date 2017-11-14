@@ -27,6 +27,8 @@ let lockedSockets = {};
 //Add socket io initial connection here
 io.on('connection', (socket) => {
 
+  //Clear this up in case there are any unclosed sockets that have the same ID
+  delete lockedSockets[socket.id]
   console.log(socket.id, 'grabbing a new connection');
 
   socket.emit('connect', {message: 'Welcome to the server! ' + socket.id});
@@ -58,9 +60,16 @@ io.on('connection', (socket) => {
                  .replace(/\\f/g, "\\f");
     // remove non-printable and other non-valid JSON chars
     data = data.replace(/[\u0000-\u0019]+/g,"");
-    const jsonData = JSON.parse(data);
 
-    if (jsonData.address){
+    let jsonData;
+    try {
+        jsonData = JSON.parse(data);
+    } catch(e) {
+        console.log(e, 'error parsing the json'); // error in the above string (in this case, yes)!
+    }
+
+
+    if (jsonData && jsonData.address){
       const nxtSocket = sockets[jsonData.address];
       const commands = jsonData.commands || [];
 
